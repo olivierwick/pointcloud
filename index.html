@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.0/addons/p5.sound.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5.capture@1.4.1/dist/p5.capture.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/spite/ccapture.js@master/build/CCapture.all.min.js"></script>
+    <script src="sketch.js" defer></script> 
+    <style>
+        body {
+            font-family: Helvetica, sans-serif;
+            background-color: #000;
+        }
+        #title-point {
+            color: #ffffff;
+            margin-bottom: 30px;
+            position:fixed;
+            z-index: 100;
+            visibility: hidden;
+            left: 20px;
+            top: 20px;
+            font-size: 18px;
+            font-weight: normal;
+        }
+        #drop_zone {
+            padding: 20% 20%;
+            background-color: #ffffff00;
+            position: absolute;
+            color: #ffffff;
+            font-size: 40px;
+            z-index: 100;
+        }
+
+        #arrow-image1 {
+            width: 120px;
+            justify-content: center;
+            position: fixed;
+            top: 23vw;
+            left:30vw;
+        }
+
+        #arrow-image2 {
+            width: 120px;
+            justify-content: center;
+            position: fixed;
+            top: 10vw;
+            transform: rotate(90deg);
+        }
+
+        #arrow-image3 {
+            width: 120px;
+            justify-content: center;
+            position: fixed;
+            top: 23vw;
+            transform: rotate(180deg);
+            right:30vw
+        }
+
+        #arrow-image4 {
+            width: 120px;
+            justify-content: center;
+            position: fixed;
+            bottom: 10vw;
+            transform: rotate(270deg);
+        }
+
+        #obj-text {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #animate-text, #disable-text {
+            position: absolute;
+            color: #ffffff;
+            width: 100px;
+            bottom: 70px;
+            left: 30vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 130;
+        }
+
+        #wave-1, #wave-2, #wave-3, #wave-4 {
+            position: absolute;
+            color: #ffffff;
+            bottom: 20px;
+            left: 46vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #wave-button {
+            position: absolute;
+            color: #ffffff;
+            bottom: 20px;
+            left: 51vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #wave-height {
+            position: absolute;
+            color: #ffffff;
+            bottom: 20px;
+            left: 57vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .noise-group {
+            z-index: 120;
+            position: absolute;
+            bottom: 100px; /* Hier positionierst du die ganze Gruppe */
+            left: 40vw;   /* Hier positionierst du die ganze Gruppe */
+            /* Container für relative Positionierung der Kinder */
+        }
+
+        #noise {
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 18px;
+            visibility: hidden;
+            position: absolute;
+            top: 30px;     /* Position relativ zur noise-group */
+            left: 60px;    /* Position relativ zur noise-group */
+        }
+
+        #rotate-anim, #disable-text2 {
+            position: absolute;
+            color: #ffffff;
+            bottom: 7vh;
+            left: 82vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #reset {
+            position: absolute;
+            color: #ffffff;
+            bottom: 2vh;
+            left: 82vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #random {
+            position: absolute;
+            color: #ffffff;
+            bottom: 12vh;
+            left: 82vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #ortho, #disable-text4{
+            position: absolute;
+            color: #ffffff;
+            bottom: 4.5vh;
+            left: 82vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+
+        #export-video {
+            position: absolute;
+            color: #ffffff;
+            bottom: 20px;
+            left: 92vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #export-stop {
+            position: absolute;
+            color: #ffffff;
+            bottom: 2vh;
+            left: 92vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #export-img {
+            position: absolute;
+            color: #ffffff;
+            bottom: 4.5vh;
+            left: 92vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #sizeX {
+            position: absolute;
+            color: #ffffff;
+            bottom: 2vh;
+            left: 10vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #sizeY {
+            position: absolute;
+            color: #ffffff;
+            bottom: 2vh;
+            left: 15vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #sizeZ {
+            position: absolute;
+            color: #ffffff;
+            bottom: 2vh;
+            left: 20vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #pointsize {
+            position: absolute;
+            color: #ffffff;
+            bottom: 2vh;
+            left: 25vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #size-general, #disable-text3 {
+            position: absolute;
+            color: #ffffff;
+            bottom: 7vh;
+            left: 2vw;
+            visibility: hidden;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+
+
+
+
+
+
+        .p5c-container {
+            display: none !important;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        .box {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 68.5px;
+            left: 2.75vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            cursor: pointer;
+            background: url('s.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(1px);
+        }
+
+        .box2 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 68.5px;
+            left: 7.75vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range2 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range2::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            cursor: pointer;
+            background: url('s.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(1px);
+        }
+
+        .box3 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 68.5px;
+            left: 12.75vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range3 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range3::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            cursor: pointer;
+            background: url('s.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(1px);
+        }
+
+        .box4 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 65.2px;
+            left: 44.5vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range4 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range4::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            background: url('f.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(4.5px);
+        }
+
+        .box5 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 65.2px;
+            left: 44.5vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range5 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range5::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            background: url('f.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(4.5px);
+        }
+
+        .box6 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 65.2px;
+            left: 44.5vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range6 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range6::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            background: url('f.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(4.5px);
+        }
+
+        .box7 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 65.2px;
+            left: 49.5vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range7 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range7::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            cursor: pointer;
+            background: url('h.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg);
+        }
+
+        .box8 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 65.2px;
+            left: 17.75vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range8 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range8::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            background: url('p.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(2.5px);
+        }
+        .box9 {
+            width: 200px;
+            transform: rotate(270deg);
+            padding: 20px;
+            position: absolute;
+            top: -61.7px;    /* Position relativ zur noise-group */
+            left: -70px;    /* Position relativ zur noise-group - rechts vom Text */
+            margin-right: 0px;
+        }
+
+.input-range9 {
+    appearance: none;
+    width: 50%; 
+    height: 3px;
+    background-color: #323232;
+    border-radius: 5px;
+}
+
+.input-range9::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10.5px;
+    height: 10.5px;
+    cursor: pointer;
+    background: url('n.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: rotate(90deg) translateX(2px);
+}
+
+        .box10 {
+            width: 200px;
+            position: absolute;
+            transform: rotate(270deg);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            bottom: 65.2px;
+            left: 44.5vw;
+            visibility: hidden;
+            z-index: 120;
+        }
+
+        .input-range10 {
+            appearance: none;
+            width: 50%; 
+            height: 3px;
+            background-color: #323232;
+            border-radius: 5px;
+        }
+
+        .input-range10::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            background: url('f.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(90deg) translateX(4.5px);
+        }
+
+
+        
+        
+
+
+    </style>
+</head>
+<body>
+    <h1 id="title-point">point cloud generator</h1>
+    <!-- <div id="dropzone" >
+        Drop File here
+    </div> -->
+
+    <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+        <p id="obj-text">drop a obj-file!</p>
+    </div>
+</body>
+    <div onmouseover="mouseOverHandler(event);" onmouseleave="mouseLeaveHandler(event);" onclick="mouseClickHandler(event);"> 
+        <p id="animate-text">animate</p>
+        <p id="disable-text">disable</p>
+
+        <p id="wave-1"> wave1</p>
+        <p id="wave-2"> wave2</p>
+        <p id="wave-3"> wave3</p>
+        <p id="wave-4"> wave4</p>
+        <p id="wave-button"> requency</p>
+        <p id="wave-height"> height</p>
+
+        <p id="rotate-anim">rotate</p>
+        <p id="disable-text2">disable</p>
+        <p id="reset">reset</p>
+        <p id="random">random</p>
+        <p id="ortho">ortho</p>
+        <p id="disable-text4">disable</p>
+
+        <p id="export-img">save img</p>
+        <p id="export-video">save video</p>
+        <p id="export-stop">stop</p>
+
+        <p id="pointsize"> ointsize</p>
+
+        <p id="size-general">size</p>
+        <p id="disable-text3">disable</p>
+        <p id="sizeX"> izeX</p>
+        <p id="sizeY"> izeY</p>
+        <p id="sizeZ"> izeZ</p>
+
+        <!-- <p id="color">color</p>
+        <p id="color-1">select color</p>
+        <p id="color-2">gradient</p> -->
+
+        <!-- sizeXYZ -->
+        <div class="box">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range" min="3" max="10" step="0.1" value="0">
+        </div>
+        <div class="box2">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range2" min="3" max="10" step="0.1" value="0">
+        </div>
+        <div class="box3">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range3" min="3" max="10" step="0.1" value="0">
+        </div>
+        <!-- wave123 und waveHeight -->
+        <div class="box4">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range4" min="0.2" max="10" step="0.1" value="0">
+        </div>
+        <div class="box5">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range5" min="0.2" max="10" step="0.1" value="0">
+        </div>
+        <div class="box6">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range6" min="0.2" max="10" step="0.1" value="0">
+        </div>
+        <div class="box7">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range7" min="3" max="25" step="0.1" value="0">
+        </div>
+        <!-- pointsize und noise -->
+        <div class="box8">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range8" min="0" max="10" step="0.1" value="0">
+        </div>
+        <div class="noise-group">
+            <p id="noise"> oise</p>
+            <div class="box9">
+                <div class="inner-box"></div>
+                <div class="line"></div>
+                <input type="range" class="input-range9" min="0" max="10" step="0.1" value="0">
+            </div>
+        </div>
+        <!-- more wave types -->
+        <div class="box10">
+            <div class="inner-box"></div>
+                <div class="line"></div>
+                    <input type="range" class="input-range10" min="0.2" max="10" step="0.1" value="0">
+        </div>
+        <img id="arrow-image1" src="/arrow.png">
+        <img id="arrow-image2" src="/arrow.png">
+        <img id="arrow-image3" src="/arrow.png">
+        <img id="arrow-image4" src="/arrow.png">
+        
+    </div>
+</html>
+
+
+
